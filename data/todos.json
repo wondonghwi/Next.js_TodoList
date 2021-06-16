@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "text" : "코딩하기",
+    "color" : "red",
+    "checked" : false
+  },
+  {
+    "id": 2,
+    "text" : "공부하기",
+    "color" : "blue",
+    "checked" : true
+  }
+]
