@@ -10,6 +10,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         res.statusCode = 404;
         res.end();
       }
+
+      const todos = Data.todo.getList();
+      const changedTodos = todos.map(todo => {
+        if (todo.id === todoId) {
+          return { ...todo, checked: !todo.checked };
+        }
+        return todo;
+      });
+      Data.todo.write(changedTodos);
+      res.statusCode = 200;
+      res.end();
+
       if (!todo) {
         res.statusCode = 404;
         res.end();
