@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { TodoType } from '../types/todo';
 import pallete from '../styles/palette';
 import TrashCanIcon from '../public/statics/svg/trash_can.svg';
 import CheckMarkIcon from '../public/statics/svg/check_mark.svg';
+import { useRouter } from 'next/router';
+import { checkedTodoApi } from '../lib/api/todo';
 
 interface TodoListProps {
   todos: TodoType[];
@@ -14,9 +16,13 @@ type ObjectIndexType = {
 };
 
 const TodoList = ({ todos }: TodoListProps) => {
+  const router = useRouter();
+
+  const [localTodos, setLocalTodos] = useState(todos);
+
   const todoColorNums = useMemo(() => {
     const colors: ObjectIndexType = {};
-    todos.forEach(todo => {
+    localTodos.forEach(todo => {
       const value = colors[todo.color];
       if (!value) {
         //* 존재하지않던 key라면
@@ -29,11 +35,29 @@ const TodoList = ({ todos }: TodoListProps) => {
     return colors;
   }, [todos]);
 
+  //투두 체크하기
+  const checkTodo = async (id: number) => {
+    try {
+      await checkedTodoApi(id);
+      console.log('체크했습니다.');
+      //체크를 적용하는 방법
+      const newTodos = localTodos.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, checked: !todo.checked };
+        }
+        return todo;
+      });
+      setLocalTodos(newTodos);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Container>
       <div className="todo-list-header">
         <p className="todo-list-last-todo">
-          남은TODO<span>{todos.length}개</span>
+          남은TODO<span>{localTodos.length}개</span>
         </p>
         <div className="todo-list-header-colors">
           {Object.keys(todoColorNums).map((color, index) => (
@@ -45,7 +69,7 @@ const TodoList = ({ todos }: TodoListProps) => {
         </div>
       </div>
       <ul className="todo-list">
-        {todos.map(todo => (
+        {localTodos.map(todo => (
           <li className="todo-item" key={todo.id}>
             <div className="todo-left-side">
               <div className={`todo-color-block bg-${todo.color}`} />
@@ -55,10 +79,23 @@ const TodoList = ({ todos }: TodoListProps) => {
               {todo.checked && (
                 <>
                   <TrashCanIcon className="todo-trash-can" onClick={() => {}} />
-                  <CheckMarkIcon className="todo-check-mark" onClick={() => {}} />
+                  <CheckMarkIcon
+                    className="todo-check-mark"
+                    onClick={() => {
+                      checkTodo(todo.id);
+                    }}
+                  />
                 </>
               )}
-              {!todo.checked && <button type="button" className="todo-button" onClick={() => {}} />}
+              {!todo.checked && (
+                <button
+                  type="button"
+                  className="todo-button"
+                  onClick={() => {
+                    checkTodo(todo.id);
+                  }}
+                />
+              )}
             </div>
           </li>
         ))}
