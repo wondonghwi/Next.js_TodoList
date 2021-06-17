@@ -5,7 +5,7 @@ import pallete from '../styles/palette';
 import TrashCanIcon from '../public/statics/svg/trash_can.svg';
 import CheckMarkIcon from '../public/statics/svg/check_mark.svg';
 import { useRouter } from 'next/router';
-import { checkedTodoApi } from '../lib/api/todo';
+import { checkedTodoApi, deleteTodoAPI } from '../lib/api/todo';
 
 interface TodoListProps {
   todos: TodoType[];
@@ -53,6 +53,18 @@ const TodoList = ({ todos }: TodoListProps) => {
     }
   };
 
+  //투두 삭제하기
+  const deleteTodo = async (id: number) => {
+    try {
+      await deleteTodoAPI(id);
+      const newTodos = localTodos.filter(todo => todo.id !== id);
+      setLocalTodos(newTodos);
+      console.log('삭제했습니다.');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Container>
       <div className="todo-list-header">
@@ -78,7 +90,12 @@ const TodoList = ({ todos }: TodoListProps) => {
             <div className="todo-right-side">
               {todo.checked && (
                 <>
-                  <TrashCanIcon className="todo-trash-can" onClick={() => {}} />
+                  <TrashCanIcon
+                    className="todo-trash-can"
+                    onClick={() => {
+                      deleteTodo(todo.id);
+                    }}
+                  />
                   <CheckMarkIcon
                     className="todo-check-mark"
                     onClick={() => {

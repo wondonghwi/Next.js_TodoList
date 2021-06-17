@@ -3,16 +3,35 @@ import BrushIcon from '../public/statics/svg/brush.svg';
 import styled from 'styled-components';
 import pallete from '../styles/palette';
 import { TodoType } from '../types/todo';
+import { addTodoAPI } from '../lib/api/todo';
+import { useRouter } from 'next/router';
 
 const AddTodo = () => {
+  const router = useRouter();
+
   const [text, setText] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<TodoType['color']>();
+
+  //투두 추가하기
+  const addTodo = async () => {
+    try {
+      if (!text || !selectedColor) {
+        alert('색상과 할 일을 입력해주세요');
+        return;
+      }
+      await addTodoAPI({ text, color: selectedColor });
+      console.log('추가했습니다.');
+      router.push('/');
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Container>
       <div className="add-todo-header">
         <h1 className="add-todo-header-title">Add Todo</h1>
-        <button type="button" className="add-todo-submit-button" onClick={() => {}}>
+        <button type="button" className="add-todo-submit-button" onClick={addTodo}>
           추가하기
         </button>
       </div>
