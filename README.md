@@ -1,1 +1,1 @@
-# 진행중 ~
+Next.js + StyledComponents를 이용한 TodoList
