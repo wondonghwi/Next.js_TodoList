@@ -12,4 +12,4 @@ export const checkedTodoApi = (id: number) => axios.patch(`api/todos/${id}`);
 // 추가하기
 export const addTodoAPI = (body: AddTodoAPIBody) => axios.post('api/todos', body);
 // 삭제하기
-export const deleteTodoAPI = (id: number) => axios.delete(`/api/todos/${id}`);
+export const deleteTodoAPI = (id: number) => axios.delete(`api/todos/${id}`);
