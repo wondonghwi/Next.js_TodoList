@@ -12,4 +12,4 @@ Next.js + StyledComponents를 이용한 TodoList
 ![](images/img.png)
 > 할일목록 입력 화면 
 
-![](images/img1.png)
+![](images/img_1.png)
